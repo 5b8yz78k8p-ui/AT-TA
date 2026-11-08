@@ -89,10 +89,8 @@
         .delete-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.9em; }
         .delete-btn:hover { background: #cc0000; }
 
-        .link-input-group { display: flex; gap: 10px; align-items: center; }
-        .link-input-group input { flex: 1; }
-        .open-site-btn { background-color: #e6d5a8; color: #0a2e1f; border: none; padding: 8px 12px; border-radius: 5px; font-size: 0.9em; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .open-site-btn:hover { background-color: #ffffff; }
+        .image-file-input { padding: 8px; border: 1px solid rgba(230, 213, 168, 0.5); border-radius: 5px; background: rgba(0,0,0,0.2); color: #fff; width: 100%; box-sizing: border-box; }
+        .image-help { color: #aaa; font-size: 0.8em; margin-top: -5px; }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 4000; flex-direction: column; }
         .loading-overlay.active { display: flex; }
@@ -178,6 +176,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBQABRSfd8HGHrabbXyqhN1KN-_mS8G-8Y",
@@ -191,6 +190,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         window.firebaseDB = db;
         window.firebaseCollection = collection;
@@ -199,6 +199,10 @@
         window.firebaseAddDoc = addDoc;
         window.firebaseUpdateDoc = updateDoc;
         window.firebaseDeleteDoc = deleteDoc;
+        window.firebaseStorage = storage;
+        window.firebaseStorageRef = ref;
+        window.firebaseUploadBytes = uploadBytes;
+        window.firebaseGetDownloadURL = getDownloadURL;
 
         window.firebaseReady = true;
         document.dispatchEvent(new Event('firebaseReady'));
@@ -209,11 +213,10 @@
         let newProducts = []; 
         let deletedProducts = []; 
         let cart = [];
+        const selectedImages = new Map();
         const ADMIN_PASSWORD = "Story5155";
         let isFirebaseReady = false;
         let newProductCounter = 0;
-
-        const UPLOAD_SITE_URL = "https://postimages.org/";
 
         document.addEventListener('firebaseReady', () => {
             isFirebaseReady = true;
@@ -289,6 +292,7 @@
         function openAdmin() {
             const panel = document.getElementById('admin-panel');
             const list = document.getElementById('admin-products-list');
+            clearSelectedImages();
             list.innerHTML = '';
             newProducts = [];
             deletedProducts = [];
@@ -322,7 +326,7 @@
             const image = product.image || '';
             
             // Уникальный ID для каждого блока, чтобы кнопка удаления работала четко
-            const blockId = isNew ? 'new-' + index : 'old-' + index; 
+            const blockId = isNew ? 'new-' + (product._uploadId ?? index) : 'old-' + index;
             const productNumber = getProductNumber(index, isNew);
             const title = `Товар ${productNumber}`;
 
@@ -338,11 +342,11 @@
                     <label>Цена (₽):</label>
                     <input type="number" id="admin-price-${blockId}" value="${price}">
                     
-                    <label>Ссылка на фото (URL):</label>
-                    <div class="link-input-group">
-                        <input type="text" id="admin-image-${blockId}" value="${image}" placeholder="Вставьте ссылку сюда...">
-                        <button class="open-site-btn" onclick="openUploadSite()">Загрузить фото</button>
-                    </div>
+                    <label for="admin-file-${blockId}">Фото из галереи:</label>
+                    <input class="image-file-input" type="file" id="admin-file-${blockId}" accept="image/*" onchange="selectProductImage(this, '${blockId}')">
+                    <span class="image-help">Можно выбрать фото с устройства (до 10 МБ).</span>
+                    <label for="admin-image-${blockId}">Или укажите ссылку на фото:</label>
+                    <input type="url" id="admin-image-${blockId}" value="${image}" placeholder="https://..." oninput="clearSelectedImage('${blockId}')">
                     <img src="${image}" id="admin-preview-${blockId}" class="preview-img" alt="Превью" onerror="this.style.display='none'">
                 </div>
             `;
@@ -354,6 +358,7 @@
             
             if (isNew) {
                 if (confirm("Удалить этот новый товар?")) {
+                    clearSelectedImage(blockId);
                     // Удаляем из массива новых
                     newProducts.splice(index, 1);
                     // Удаляем блок из HTML
@@ -363,6 +368,7 @@
                 }
             } else {
                 if (confirm("Удалить этот товар из базы?")) {
+                    clearSelectedImage(blockId);
                     // Помечаем на удаление
                     deletedProducts.push(products[index].id);
                     // Скрываем блок
@@ -392,13 +398,77 @@
             });
         }
 
-        function openUploadSite() {
-            window.open(UPLOAD_SITE_URL, '_blank');
+        function clearSelectedImages() {
+            for (const { previewUrl } of selectedImages.values()) {
+                URL.revokeObjectURL(previewUrl);
+            }
+            selectedImages.clear();
+        }
+
+        function clearSelectedImage(blockId) {
+            const selected = selectedImages.get(blockId);
+            if (selected) {
+                URL.revokeObjectURL(selected.previewUrl);
+                selectedImages.delete(blockId);
+            }
+
+            const imageUrl = document.getElementById('admin-image-' + blockId)?.value || '';
+            const preview = document.getElementById('admin-preview-' + blockId);
+            if (preview) {
+                preview.src = imageUrl;
+                preview.style.display = imageUrl ? 'block' : 'none';
+            }
+        }
+
+        function selectProductImage(input, blockId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+                input.value = '';
+                alert("Выберите изображение в формате JPG, PNG, WebP или другом растровом формате.");
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                input.value = '';
+                alert("Размер фото не должен превышать 10 МБ.");
+                return;
+            }
+
+            const previous = selectedImages.get(blockId);
+            if (previous) URL.revokeObjectURL(previous.previewUrl);
+            const previewUrl = URL.createObjectURL(file);
+            selectedImages.set(blockId, { file, previewUrl });
+
+            const preview = document.getElementById('admin-preview-' + blockId);
+            preview.src = previewUrl;
+            preview.style.display = 'block';
+        }
+
+        async function uploadProductImage(file) {
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const storagePath = `products/${Date.now()}-${Math.random().toString(36).slice(2)}-${safeName}`;
+            const imageRef = window.firebaseStorageRef(window.firebaseStorage, storagePath);
+            await window.firebaseUploadBytes(imageRef, file, { contentType: file.type });
+            return window.firebaseGetDownloadURL(imageRef);
+        }
+
+        async function getProductImage(blockId, fallback = '') {
+            const selected = selectedImages.get(blockId);
+            if (!selected) {
+                return document.getElementById('admin-image-' + blockId).value || fallback;
+            }
+
+            const imageUrl = await uploadProductImage(selected.file);
+            document.getElementById('admin-image-' + blockId).value = imageUrl;
+            URL.revokeObjectURL(selected.previewUrl);
+            selectedImages.delete(blockId);
+            return imageUrl;
         }
 
         function addNewProductRow() {
             const newIndex = newProductCounter++;
-            const newProduct = { name: '', price: 0, image: '' };
+            const newProduct = { name: '', price: 0, image: '', _uploadId: newIndex };
             newProducts.push(newProduct);
             
             // Просто добавляем новый блок в конец
@@ -410,6 +480,7 @@
 
         function closeAdmin() {
             document.getElementById('admin-panel').classList.remove('active');
+            clearSelectedImages();
         }
 
         async function saveAdminChanges() {
@@ -435,7 +506,8 @@
                     const blockId = 'old-' + index;
                     const newName = document.getElementById('admin-name-' + blockId).value;
                     const newPrice = parseInt(document.getElementById('admin-price-' + blockId).value) || 0;
-                    const newImage = document.getElementById('admin-image-' + blockId).value;
+                    loadingText.innerText = `Сохранение фото: ${newName}...`;
+                    const newImage = await getProductImage(blockId);
 
                     loadingText.innerText = `Сохранение: ${newName}...`;
                     await window.firebaseUpdateDoc(window.firebaseDoc(window.firebaseDB, "products", p.id), {
@@ -447,10 +519,11 @@
 
                 // 3. ДОБАВЛЕНИЕ НОВЫХ
                 for (let i = 0; i < newProducts.length; i++) {
-                    const blockId = 'new-' + i;
+                    const blockId = 'new-' + (newProducts[i]._uploadId ?? i);
                     const newName = document.getElementById('admin-name-' + blockId).value;
                     const newPrice = parseInt(document.getElementById('admin-price-' + blockId).value) || 0;
-                    const newImage = document.getElementById('admin-image-' + blockId).value || 'https://placehold.co/400x400/0a2e1f/e6d5a8?text=Фото';
+                    loadingText.innerText = `Загрузка фото: ${newName}...`;
+                    const newImage = await getProductImage(blockId, 'https://placehold.co/400x400/0a2e1f/e6d5a8?text=Фото');
 
                     loadingText.innerText = `Добавление: ${newName}...`;
                     await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, "products"), {
