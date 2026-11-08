@@ -91,6 +91,8 @@
 
         .image-file-input { padding: 8px; border: 1px solid rgba(230, 213, 168, 0.5); border-radius: 5px; background: rgba(0,0,0,0.2); color: #fff; width: 100%; box-sizing: border-box; }
         .image-help { color: #aaa; font-size: 0.8em; margin-top: -5px; }
+        .postimages-btn { background: #e6d5a8; color: #0a2e1f; border: none; padding: 9px 12px; border-radius: 5px; font-size: 0.9em; font-weight: bold; cursor: pointer; width: fit-content; }
+        .postimages-btn:hover { background: #fff; }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 4000; flex-direction: column; }
         .loading-overlay.active { display: flex; }
@@ -214,6 +216,7 @@
         let deletedProducts = []; 
         let cart = [];
         const selectedImages = new Map();
+        const POSTIMAGES_URL = "https://postimages.org/";
         const ADMIN_PASSWORD = "Story5155";
         let isFirebaseReady = false;
         let newProductCounter = 0;
@@ -345,6 +348,8 @@
                     <label for="admin-file-${blockId}">Фото из галереи:</label>
                     <input class="image-file-input" type="file" id="admin-file-${blockId}" accept="image/*" onchange="selectProductImage(this, '${blockId}')">
                     <span class="image-help">Можно выбрать фото с устройства (до 10 МБ).</span>
+                    <button class="postimages-btn" type="button" id="admin-postimages-${blockId}" onclick="openPostimages('${blockId}')" hidden>Открыть Postimages</button>
+                    <span class="image-help" id="admin-postimages-help-${blockId}" hidden>На Postimages выберите это фото ещё раз, загрузите его, скопируйте ссылку и вставьте её в поле ниже.</span>
                     <label for="admin-image-${blockId}">Или укажите ссылку на фото:</label>
                     <input type="url" id="admin-image-${blockId}" value="${image}" placeholder="https://..." oninput="clearSelectedImage('${blockId}')">
                     <img src="${image}" id="admin-preview-${blockId}" class="preview-img" alt="Превью" onerror="this.style.display='none'">
@@ -443,6 +448,16 @@
             const preview = document.getElementById('admin-preview-' + blockId);
             preview.src = previewUrl;
             preview.style.display = 'block';
+            document.getElementById('admin-postimages-' + blockId).hidden = false;
+        }
+
+        function openPostimages(blockId) {
+            const postimagesTab = window.open(POSTIMAGES_URL, '_blank', 'noopener,noreferrer');
+            if (!postimagesTab) {
+                alert("Браузер заблокировал новое окно. Разрешите всплывающие окна или откройте https://postimages.org/ вручную.");
+                return;
+            }
+            document.getElementById('admin-postimages-help-' + blockId).hidden = false;
         }
 
         async function uploadProductImage(file) {
