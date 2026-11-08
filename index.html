@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GULÌSTORY</title>
+    <title>ATTA</title>
     <style>
         body { font-family: 'Georgia', serif; background: linear-gradient(135deg, #0a2e1f 0%, #1a4a2e 50%, #0a2e1f 100%); color: #f5f5dc; margin: 0; padding: 20px; overflow-x: hidden; position: relative; min-height: 100vh; }
         
@@ -101,78 +101,109 @@
         .loading-text { color: #e6d5a8; font-size: 1.2em; text-align: center; padding: 0 20px; }
 
         .empty-message { color: #e6d5a8; text-align: center; width: 100%; grid-column: 1 / -1; font-size: 1.2em; margin-top: 20px; }
+
+        body {
+            background: #080808;
+            color: #f5f5f5;
+        }
+
+        body > *:not(.mountain-bg) {
+            filter: grayscale(1) contrast(1.05);
+        }
+
+        .mountain-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background: linear-gradient(#080808 0%, #171717 54%, #080808 100%);
+        }
+
+        .mountain-bg svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: min(58vh, 620px);
+            min-height: 300px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="flower-bg">
-        <div class="flower"></div>
-        <div class="flower"></div>
-        <div class="flower"></div>
-        <div class="flower"></div>
-        <div class="flower"></div>
-        <div class="flower"></div>
+    <div class="mountain-bg" aria-hidden="true">
+        <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMax slice">
+            <path fill="#303030" d="M0 430 170 260 275 365 470 105 675 370 825 215 1010 390 1200 170 1440 430V600H0Z"/>
+            <path fill="#f2f2f2" d="m385 215 85-110 90 116-70-38-27 36-32-24-25 34zM1130 250l70-80 86 108-64-36-25 28-29-24-21 25z"/>
+            <path fill="#191919" d="M0 500 190 340 350 470 570 275 770 470 940 330 1130 495 1320 320 1440 420V600H0Z"/>
+            <path fill="#080808" d="m0 540 170-96 130 78 190-128 170 132 190-100 180 120 175-92 235 95v51H0z"/>
+            <path fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" d="m0 500 190-160 160 130 220-195 200 195 170-140 190 165 190-175 120 100"/>
+        </svg>
     </div>
 
     <header>
-        <h1>GULÌSTORY</h1>
-        <p>Будь у себя в приоритете</p>
+        <h1>ATTA</h1>
+        <p>Р‘СѓРґСЊ Сѓ СЃРµР±СЏ РІ РїСЂРёРѕСЂРёС‚РµС‚Рµ</p>
     </header>
 
     <div class="floating-admin" onclick="openAuth()">
-        <span class="floating-admin-text">Админ ⚙️</span>
+        <span class="floating-admin-text">РђРґРјРёРЅ вљ™пёЏ</span>
     </div>
 
     <div class="floating-cart" onclick="openCart()">
-        <span class="floating-cart-text">Корзина</span>
-        <span class="floating-cart-icon">🛒</span>
+        <span class="floating-cart-text">РљРѕСЂР·РёРЅР°</span>
+        <span class="floating-cart-icon">рџ›’</span>
         <div class="floating-cart-count" id="floating-count">0</div>
     </div>
 
     <div class="cart-dropdown" id="cart-dropdown">
         <button class="close-cart" onclick="closeCart()">X</button>
-        <h2>🛒 Ваша корзина</h2>
+        <h2>рџ›’ Р’Р°С€Р° РєРѕСЂР·РёРЅР°</h2>
         <div id="cart-items" class="cart-items-scroll"></div>
-        <div class="total">Итого: <span id="total-price">0</span> ₽</div>
-        <a href="#" id="whatsapp-link" class="whatsapp-btn" target="_blank">Оформить в WhatsApp 📲</a>
+        <div class="total">РС‚РѕРіРѕ: <span id="total-price">0</span> в‚Ѕ</div>
+        <a href="#" id="whatsapp-link" class="whatsapp-btn" target="_blank">РћС„РѕСЂРјРёС‚СЊ РІ WhatsApp рџ“І</a>
     </div>
 
     <div class="goods-grid" id="goods-grid">
-        <p style="color:#e6d5a8; text-align:center; width:100%; grid-column: 1 / -1;">Загрузка товаров...</p>
+        <p style="color:#e6d5a8; text-align:center; width:100%; grid-column: 1 / -1;">Р—Р°РіСЂСѓР·РєР° С‚РѕРІР°СЂРѕРІ...</p>
     </div>
 
     <div class="modal" id="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal" onclick="closeModal()">X</button>
-            <img id="modal-image" src="" alt="Фото товара">
+            <img id="modal-image" src="" alt="Р¤РѕС‚Рѕ С‚РѕРІР°СЂР°">
             <div class="modal-price" id="modal-price"></div>
-            <button class="modal-btn" id="modal-add-btn">Добавить в корзину</button>
+            <button class="modal-btn" id="modal-add-btn">Р”РѕР±Р°РІРёС‚СЊ РІ РєРѕСЂР·РёРЅСѓ</button>
         </div>
     </div>
 
     <div class="auth-modal" id="auth-modal">
         <div class="auth-content">
-            <h3 style="color:#e6d5a8; margin-top:0;">Вход в админ-панель</h3>
-            <input type="password" id="admin-password" placeholder="Введите пароль...">
-            <button class="auth-btn" onclick="checkPassword()">Войти</button>
-            <button class="auth-btn" style="background:#ff4d4d; color:white; margin-top:10px;" onclick="closeAuth()">Отмена</button>
+            <h3 style="color:#e6d5a8; margin-top:0;">Р’С…РѕРґ РІ Р°РґРјРёРЅ-РїР°РЅРµР»СЊ</h3>
+            <input type="password" id="admin-password" placeholder="Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ...">
+            <button class="auth-btn" onclick="checkPassword()">Р’РѕР№С‚Рё</button>
+            <button class="auth-btn" style="background:#ff4d4d; color:white; margin-top:10px;" onclick="closeAuth()">РћС‚РјРµРЅР°</button>
         </div>
     </div>
 
     <div class="admin-panel" id="admin-panel">
         <div class="admin-content">
             <button class="admin-close" onclick="closeAdmin()">X</button>
-            <h2>Управление товарами</h2>
+            <h2>РЈРїСЂР°РІР»РµРЅРёРµ С‚РѕРІР°СЂР°РјРё</h2>
             
-            <button class="add-new-btn" onclick="addNewProductRow()">+ Добавить новый товар</button>
+            <button class="add-new-btn" onclick="addNewProductRow()">+ Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ С‚РѕРІР°СЂ</button>
             
             <div id="admin-products-list"></div>
-            <button class="save-btn" onclick="saveAdminChanges()">Сохранить все изменения</button>
+            <button class="save-btn" onclick="saveAdminChanges()">РЎРѕС…СЂР°РЅРёС‚СЊ РІСЃРµ РёР·РјРµРЅРµРЅРёСЏ</button>
         </div>
     </div>
 
     <div class="loading-overlay" id="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-text" id="loading-text">Загрузка...</div>
+        <div class="loading-text" id="loading-text">Р—Р°РіСЂСѓР·РєР°...</div>
     </div>
 
     <script type="module">
@@ -229,13 +260,13 @@
         async function loadProductsFromFirebase() {
             if (!isFirebaseReady) return;
             const grid = document.getElementById('goods-grid');
-            grid.innerHTML = '<p style="color:#e6d5a8; text-align:center; width:100%; grid-column: 1 / -1;">Загрузка товаров...</p>';
+            grid.innerHTML = '<p style="color:#e6d5a8; text-align:center; width:100%; grid-column: 1 / -1;">Р—Р°РіСЂСѓР·РєР° С‚РѕРІР°СЂРѕРІ...</p>';
 
             try {
                 const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDB, "products"));
                 
                 if (querySnapshot.empty) {
-                    grid.innerHTML = '<p class="empty-message">Товаров пока нет. Зайдите в админ-панель, чтобы добавить их.</p>';
+                    grid.innerHTML = '<p class="empty-message">РўРѕРІР°СЂРѕРІ РїРѕРєР° РЅРµС‚. Р—Р°Р№РґРёС‚Рµ РІ Р°РґРјРёРЅ-РїР°РЅРµР»СЊ, С‡С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ РёС….</p>';
                     return;
                 }
 
@@ -248,8 +279,8 @@
                 renderProducts();
 
             } catch (e) {
-                console.error("Ошибка загрузки: ", e);
-                grid.innerHTML = '<p style="color:red; text-align:center; width:100%;">Ошибка подключения к базе данных.</p>';
+                console.error("РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё: ", e);
+                grid.innerHTML = '<p style="color:red; text-align:center; width:100%;">РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С….</p>';
             }
         }
 
@@ -258,7 +289,7 @@
             grid.innerHTML = '';
             
             if (products.length === 0) {
-                grid.innerHTML = '<p class="empty-message">Товаров пока нет. Зайдите в админ-панель, чтобы добавить их.</p>';
+                grid.innerHTML = '<p class="empty-message">РўРѕРІР°СЂРѕРІ РїРѕРєР° РЅРµС‚. Р—Р°Р№РґРёС‚Рµ РІ Р°РґРјРёРЅ-РїР°РЅРµР»СЊ, С‡С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ РёС….</p>';
                 return;
             }
 
@@ -266,8 +297,8 @@
                 grid.innerHTML += `
                     <div class="card">
                         <img src="${p.image}" alt="${p.name}" onclick="openModal('${p.image}', ${p.price}, '${p.name}')">
-                        <div class="price"><span class="price-value">${p.price}</span> ₽</div>
-                        <button class="add-btn" onclick="addToCart('Товар ${index + 1}: ${p.name}', ${p.price})">Добавить в корзину</button>
+                        <div class="price"><span class="price-value">${p.price}</span> в‚Ѕ</div>
+                        <button class="add-btn" onclick="addToCart('РўРѕРІР°СЂ ${index + 1}: ${p.name}', ${p.price})">Р”РѕР±Р°РІРёС‚СЊ РІ РєРѕСЂР·РёРЅСѓ</button>
                     </div>
                 `;
             });
@@ -288,7 +319,7 @@
                 closeAuth();
                 openAdmin();
             } else {
-                alert("Неверный пароль!");
+                alert("РќРµРІРµСЂРЅС‹Р№ РїР°СЂРѕР»СЊ!");
             }
         }
 
@@ -308,7 +339,7 @@
             panel.classList.add('active');
         }
 
-        // Считаем номер для отображения (учитывая удаленные)
+        // РЎС‡РёС‚Р°РµРј РЅРѕРјРµСЂ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ (СѓС‡РёС‚С‹РІР°СЏ СѓРґР°Р»РµРЅРЅС‹Рµ)
         function getProductNumber(index, isNew) {
             let counter = 0;
             for (let i = 0; i < products.length; i++) {
@@ -328,69 +359,69 @@
             const price = product.price || 0;
             const image = product.image || '';
             
-            // Уникальный ID для каждого блока, чтобы кнопка удаления работала четко
+            // РЈРЅРёРєР°Р»СЊРЅС‹Р№ ID РґР»СЏ РєР°Р¶РґРѕРіРѕ Р±Р»РѕРєР°, С‡С‚РѕР±С‹ РєРЅРѕРїРєР° СѓРґР°Р»РµРЅРёСЏ СЂР°Р±РѕС‚Р°Р»Р° С‡РµС‚РєРѕ
             const blockId = isNew ? 'new-' + (product._uploadId ?? index) : 'old-' + index;
             const productNumber = getProductNumber(index, isNew);
-            const title = `Товар ${productNumber}`;
+            const title = `РўРѕРІР°СЂ ${productNumber}`;
 
             return `
                 <div class="product-edit" id="edit-block-${blockId}">
                     <h3>${title}</h3>
-                    <!-- Кнопка удаления привязана строго к этому блоку -->
-                    <button class="delete-btn" onclick="deleteProduct('${blockId}', ${isNew}, ${index})">Удалить</button>
+                    <!-- РљРЅРѕРїРєР° СѓРґР°Р»РµРЅРёСЏ РїСЂРёРІСЏР·Р°РЅР° СЃС‚СЂРѕРіРѕ Рє СЌС‚РѕРјСѓ Р±Р»РѕРєСѓ -->
+                    <button class="delete-btn" onclick="deleteProduct('${blockId}', ${isNew}, ${index})">РЈРґР°Р»РёС‚СЊ</button>
                     
-                    <label>Название:</label>
+                    <label>РќР°Р·РІР°РЅРёРµ:</label>
                     <input type="text" id="admin-name-${blockId}" value="${name}">
                     
-                    <label>Цена (₽):</label>
+                    <label>Р¦РµРЅР° (в‚Ѕ):</label>
                     <input type="number" id="admin-price-${blockId}" value="${price}">
                     
-                    <label for="admin-file-${blockId}">Фото из галереи:</label>
+                    <label for="admin-file-${blockId}">Р¤РѕС‚Рѕ РёР· РіР°Р»РµСЂРµРё:</label>
                     <input class="image-file-input" type="file" id="admin-file-${blockId}" accept="image/*" onchange="selectProductImage(this, '${blockId}')">
-                    <span class="image-help">Можно выбрать фото с устройства (до 10 МБ).</span>
-                    <button class="postimages-btn" type="button" id="admin-postimages-${blockId}" onclick="openPostimages('${blockId}')" hidden>Открыть Postimages</button>
-                    <span class="image-help" id="admin-postimages-help-${blockId}" hidden>На Postimages выберите это фото ещё раз, загрузите его, скопируйте ссылку и вставьте её в поле ниже.</span>
-                    <label for="admin-image-${blockId}">Или укажите ссылку на фото:</label>
+                    <span class="image-help">РњРѕР¶РЅРѕ РІС‹Р±СЂР°С‚СЊ С„РѕС‚Рѕ СЃ СѓСЃС‚СЂРѕР№СЃС‚РІР° (РґРѕ 10 РњР‘).</span>
+                    <button class="postimages-btn" type="button" id="admin-postimages-${blockId}" onclick="openPostimages('${blockId}')" hidden>РћС‚РєСЂС‹С‚СЊ Postimages</button>
+                    <span class="image-help" id="admin-postimages-help-${blockId}" hidden>РќР° Postimages РІС‹Р±РµСЂРёС‚Рµ СЌС‚Рѕ С„РѕС‚Рѕ РµС‰С‘ СЂР°Р·, Р·Р°РіСЂСѓР·РёС‚Рµ РµРіРѕ, СЃРєРѕРїРёСЂСѓР№С‚Рµ СЃСЃС‹Р»РєСѓ Рё РІСЃС‚Р°РІСЊС‚Рµ РµС‘ РІ РїРѕР»Рµ РЅРёР¶Рµ.</span>
+                    <label for="admin-image-${blockId}">РР»Рё СѓРєР°Р¶РёС‚Рµ СЃСЃС‹Р»РєСѓ РЅР° С„РѕС‚Рѕ:</label>
                     <input type="url" id="admin-image-${blockId}" value="${image}" placeholder="https://..." oninput="clearSelectedImage('${blockId}')">
-                    <img src="${image}" id="admin-preview-${blockId}" class="preview-img" alt="Превью" onerror="this.style.display='none'">
+                    <img src="${image}" id="admin-preview-${blockId}" class="preview-img" alt="РџСЂРµРІСЊСЋ" onerror="this.style.display='none'">
                 </div>
             `;
         }
 
-        // Четкая функция удаления
+        // Р§РµС‚РєР°СЏ С„СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ
         function deleteProduct(blockId, isNew, index) {
             const block = document.getElementById('edit-block-' + blockId);
             
             if (isNew) {
-                if (confirm("Удалить этот новый товар?")) {
+                if (confirm("РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ РЅРѕРІС‹Р№ С‚РѕРІР°СЂ?")) {
                     clearSelectedImage(blockId);
-                    // Удаляем из массива новых
+                    // РЈРґР°Р»СЏРµРј РёР· РјР°СЃСЃРёРІР° РЅРѕРІС‹С…
                     newProducts.splice(index, 1);
-                    // Удаляем блок из HTML
+                    // РЈРґР°Р»СЏРµРј Р±Р»РѕРє РёР· HTML
                     if (block) block.remove();
-                    // Перерисовываем ТОЛЬКО чтобы обновить номера
+                    // РџРµСЂРµСЂРёСЃРѕРІС‹РІР°РµРј РўРћР›Р¬РљРћ С‡С‚РѕР±С‹ РѕР±РЅРѕРІРёС‚СЊ РЅРѕРјРµСЂР°
                     redrawAllProducts();
                 }
             } else {
-                if (confirm("Удалить этот товар из базы?")) {
+                if (confirm("РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ С‚РѕРІР°СЂ РёР· Р±Р°Р·С‹?")) {
                     clearSelectedImage(blockId);
-                    // Помечаем на удаление
+                    // РџРѕРјРµС‡Р°РµРј РЅР° СѓРґР°Р»РµРЅРёРµ
                     deletedProducts.push(products[index].id);
-                    // Скрываем блок
+                    // РЎРєСЂС‹РІР°РµРј Р±Р»РѕРє
                     if (block) block.style.display = 'none';
-                    // Перерисовываем, чтобы номера сдвинулись
+                    // РџРµСЂРµСЂРёСЃРѕРІС‹РІР°РµРј, С‡С‚РѕР±С‹ РЅРѕРјРµСЂР° СЃРґРІРёРЅСѓР»РёСЃСЊ
                     redrawAllProducts();
                 }
             }
         }
 
-        // Перерисовка ТОЛЬКО для обновления номеров (сохраняет скрытие удаленных)
+        // РџРµСЂРµСЂРёСЃРѕРІРєР° РўРћР›Р¬РљРћ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РЅРѕРјРµСЂРѕРІ (СЃРѕС…СЂР°РЅСЏРµС‚ СЃРєСЂС‹С‚РёРµ СѓРґР°Р»РµРЅРЅС‹С…)
         function redrawAllProducts() {
             const list = document.getElementById('admin-products-list');
             list.innerHTML = '';
             
             products.forEach((p, index) => {
-                // Если товар не удален, отрисовываем
+                // Р•СЃР»Рё С‚РѕРІР°СЂ РЅРµ СѓРґР°Р»РµРЅ, РѕС‚СЂРёСЃРѕРІС‹РІР°РµРј
                 if (!deletedProducts.includes(p.id)) {
                     list.innerHTML += createProductEditHTML(p, index, false);
                 }
@@ -431,12 +462,12 @@
 
             if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
                 input.value = '';
-                alert("Выберите изображение в формате JPG, PNG, WebP или другом растровом формате.");
+                alert("Р’С‹Р±РµСЂРёС‚Рµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РІ С„РѕСЂРјР°С‚Рµ JPG, PNG, WebP РёР»Рё РґСЂСѓРіРѕРј СЂР°СЃС‚СЂРѕРІРѕРј С„РѕСЂРјР°С‚Рµ.");
                 return;
             }
             if (file.size > 10 * 1024 * 1024) {
                 input.value = '';
-                alert("Размер фото не должен превышать 10 МБ.");
+                alert("Р Р°Р·РјРµСЂ С„РѕС‚Рѕ РЅРµ РґРѕР»Р¶РµРЅ РїСЂРµРІС‹С€Р°С‚СЊ 10 РњР‘.");
                 return;
             }
 
@@ -454,7 +485,7 @@
         function openPostimages(blockId) {
             const postimagesTab = window.open(POSTIMAGES_URL, '_blank', 'noopener,noreferrer');
             if (!postimagesTab) {
-                alert("Браузер заблокировал новое окно. Разрешите всплывающие окна или откройте https://postimages.org/ вручную.");
+                alert("Р‘СЂР°СѓР·РµСЂ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р» РЅРѕРІРѕРµ РѕРєРЅРѕ. Р Р°Р·СЂРµС€РёС‚Рµ РІСЃРїР»С‹РІР°СЋС‰РёРµ РѕРєРЅР° РёР»Рё РѕС‚РєСЂРѕР№С‚Рµ https://postimages.org/ РІСЂСѓС‡РЅСѓСЋ.");
                 return;
             }
             document.getElementById('admin-postimages-help-' + blockId).hidden = false;
@@ -486,7 +517,7 @@
             const newProduct = { name: '', price: 0, image: '', _uploadId: newIndex };
             newProducts.push(newProduct);
             
-            // Просто добавляем новый блок в конец
+            // РџСЂРѕСЃС‚Рѕ РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ Р±Р»РѕРє РІ РєРѕРЅРµС†
             const list = document.getElementById('admin-products-list');
             const div = document.createElement('div');
             div.innerHTML = createProductEditHTML(newProduct, newIndex, true);
@@ -499,7 +530,7 @@
         }
 
         async function saveAdminChanges() {
-            if (!isFirebaseReady) return alert("Firebase еще не загружен!");
+            if (!isFirebaseReady) return alert("Firebase РµС‰Рµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅ!");
             
             const overlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
@@ -507,13 +538,13 @@
             overlay.classList.add('active');
 
             try {
-                // 1. УДАЛЕНИЕ
+                // 1. РЈР”РђР›Р•РќРР•
                 for (const id of deletedProducts) {
-                    loadingText.innerText = `Удаление товара...`;
+                    loadingText.innerText = `РЈРґР°Р»РµРЅРёРµ С‚РѕРІР°СЂР°...`;
                     await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB, "products", id));
                 }
 
-                // 2. ОБНОВЛЕНИЕ СТАРЫХ
+                // 2. РћР‘РќРћР’Р›Р•РќРР• РЎРўРђР Р«РҐ
                 for (let index = 0; index < products.length; index++) {
                     if (deletedProducts.includes(products[index].id)) continue;
 
@@ -521,10 +552,10 @@
                     const blockId = 'old-' + index;
                     const newName = document.getElementById('admin-name-' + blockId).value;
                     const newPrice = parseInt(document.getElementById('admin-price-' + blockId).value) || 0;
-                    loadingText.innerText = `Сохранение фото: ${newName}...`;
+                    loadingText.innerText = `РЎРѕС…СЂР°РЅРµРЅРёРµ С„РѕС‚Рѕ: ${newName}...`;
                     const newImage = await getProductImage(blockId);
 
-                    loadingText.innerText = `Сохранение: ${newName}...`;
+                    loadingText.innerText = `РЎРѕС…СЂР°РЅРµРЅРёРµ: ${newName}...`;
                     await window.firebaseUpdateDoc(window.firebaseDoc(window.firebaseDB, "products", p.id), {
                         name: newName,
                         price: newPrice,
@@ -532,15 +563,15 @@
                     });
                 }
 
-                // 3. ДОБАВЛЕНИЕ НОВЫХ
+                // 3. Р”РћР‘РђР’Р›Р•РќРР• РќРћР’Р«РҐ
                 for (let i = 0; i < newProducts.length; i++) {
                     const blockId = 'new-' + (newProducts[i]._uploadId ?? i);
                     const newName = document.getElementById('admin-name-' + blockId).value;
                     const newPrice = parseInt(document.getElementById('admin-price-' + blockId).value) || 0;
-                    loadingText.innerText = `Загрузка фото: ${newName}...`;
-                    const newImage = await getProductImage(blockId, 'https://placehold.co/400x400/0a2e1f/e6d5a8?text=Фото');
+                    loadingText.innerText = `Р—Р°РіСЂСѓР·РєР° С„РѕС‚Рѕ: ${newName}...`;
+                    const newImage = await getProductImage(blockId, 'https://placehold.co/400x400/0a2e1f/e6d5a8?text=Р¤РѕС‚Рѕ');
 
-                    loadingText.innerText = `Добавление: ${newName}...`;
+                    loadingText.innerText = `Р”РѕР±Р°РІР»РµРЅРёРµ: ${newName}...`;
                     await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, "products"), {
                         name: newName,
                         price: newPrice,
@@ -551,11 +582,11 @@
 
                 await loadProductsFromFirebase();
                 closeAdmin();
-                alert("Все изменения успешно сохранены!");
+                alert("Р’СЃРµ РёР·РјРµРЅРµРЅРёСЏ СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅС‹!");
 
             } catch (e) {
-                console.error("Ошибка сохранения: ", e);
-                alert("Ошибка: " + e.message);
+                console.error("РћС€РёР±РєР° СЃРѕС…СЂР°РЅРµРЅРёСЏ: ", e);
+                alert("РћС€РёР±РєР°: " + e.message);
             } finally {
                 overlay.classList.remove('active');
             }
@@ -568,7 +599,7 @@
         function openModal(imageSrc, price, name) {
             const modal = document.getElementById('modal');
             document.getElementById('modal-image').src = imageSrc;
-            document.getElementById('modal-price').innerText = `${price} ₽`;
+            document.getElementById('modal-price').innerText = `${price} в‚Ѕ`;
             document.getElementById('modal-add-btn').onclick = function() { addToCart(name, price); closeModal(); };
             modal.classList.add('active');
             toggleScrollLock(true);
@@ -613,7 +644,7 @@
                 cartContainer.innerHTML += `
                     <div class="cart-item">
                         <span>${item.name} (x${item.quantity})</span>
-                        <span>${item.price * item.quantity} ₽ 
+                        <span>${item.price * item.quantity} в‚Ѕ 
                             <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:5px; cursor:pointer;">X</button>
                         </span>
                     </div>
@@ -623,11 +654,11 @@
             floatingCount.innerText = totalQuantity;
 
             const phone = "+79388955155";
-            let message = "Здравствуйте! Хочу оформить заказ в GULÌSTORY:%0A";
+            let message = "Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ! РҐРѕС‡Сѓ РѕС„РѕСЂРјРёС‚СЊ Р·Р°РєР°Р· РІ ATTA:%0A";
             cart.forEach((item, index) => {
-                message += `${index + 1}. ${item.name} (x${item.quantity}) - ${item.price * item.quantity}₽%0A`;
+                message += `${index + 1}. ${item.name} (x${item.quantity}) - ${item.price * item.quantity}в‚Ѕ%0A`;
             });
-            message += `%0AИтого: ${total}₽`;
+            message += `%0AРС‚РѕРіРѕ: ${total}в‚Ѕ`;
             const link = document.getElementById('whatsapp-link');
             link.href = `https://wa.me/${phone.replace('+', '')}?text=${message}`;
         }
