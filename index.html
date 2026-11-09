@@ -797,8 +797,8 @@
             floatingCount.innerText = totalQuantity;
 
             const phone = "+79388955155";
-            const messageLines = [                 "Здравствуйте! Хочу оформить заказ в ATTA:",                 ...cart.map((item, index) =>                     `${index + 1}. ${item.name} — ${item.quantity} шт. × ${item.price} ₽ = ${item.price * item.quantity} ₽`                 ),                 "",                 `Итого: ${total} ₽`             ];             const link = document.getElementById('whatsapp-link');             link.href = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(messageLines.join('
-'))}`;
+            const messageLines = [                 "Здравствуйте! Хочу оформить заказ в ATTA:",                 ...cart.map((item, index) =>                     `${index + 1}. ${item.name} — ${item.quantity} шт. × ${item.price} ₽ = ${item.price * item.quantity} ₽`                 ),                 "",                 `Итого: ${total} ₽`             ];             const link = document.getElementById('whatsapp-link');             link.href = 'https://wa.me/' + phone.replace('+', '') + '?text=' + encodeURIComponent(messageLines.join(String.fromCharCode(10))); 
+ 
         }
 
         function removeFromCart(index) {
