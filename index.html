@@ -259,8 +259,36 @@
             min-height: 300px;
         }
 
+        .cart-notification {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            z-index: 5000;
+            width: max-content;
+            max-width: calc(100vw - 32px);
+            padding: 14px 22px;
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            background: rgba(15, 15, 15, 0.96);
+            box-shadow: 0 0 20px var(--gold-soft);
+            color: var(--gold);
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -12px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .cart-notification.visible {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; }
+            .cart-notification { transition: none; }
         }
     </style>
 </head>
@@ -274,6 +302,7 @@
             <path fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" d="m0 500 190-160 160 130 220-195 200 195 170-140 190 165 190-175 120 100"/>
         </svg>
     </div>
+    <div class="cart-notification" id="cart-notification" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <header>
         <h1>ATTA</h1>
@@ -378,6 +407,7 @@
         let deletedProducts = []; 
         let cart = [];
         const selectedImages = new Map();
+        let cartNotificationTimeout;
         const ADMIN_PASSWORD = "Story5155";
         let isFirebaseReady = false;
         let newProductCounter = 0;
@@ -759,6 +789,17 @@
                 cart.push({ name, price, quantity: 1 });
             }
             updateCart();
+            showCartNotification();
+        }
+
+        function showCartNotification() {
+            const notification = document.getElementById('cart-notification');
+            notification.textContent = "Товар успешно добавлен в корзину";
+            notification.classList.add('visible');
+            window.clearTimeout(cartNotificationTimeout);
+            cartNotificationTimeout = window.setTimeout(() => {
+                notification.classList.remove('visible');
+            }, 2500);
         }
 
         function updateCart() {
