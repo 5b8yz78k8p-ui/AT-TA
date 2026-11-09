@@ -107,8 +107,113 @@
             color: #f5f5f5;
         }
 
-        body > *:not(.mountain-bg) {
-            filter: grayscale(1) contrast(1.05);
+        :root {
+            color-scheme: dark;
+            --gold: #d4af37;
+            --gold-soft: rgba(212, 175, 55, 0.3);
+        }
+
+        h1,
+        .floating-admin,
+        .floating-cart,
+        .cart-dropdown,
+        .card,
+        .modal-content,
+        .auth-content,
+        .admin-content,
+        .product-edit {
+            border-color: var(--gold);
+            box-shadow: 0 0 18px var(--gold-soft);
+        }
+
+        h1,
+        .cart-dropdown h2,
+        .total,
+        .price,
+        .modal-price,
+        .product-edit h3 {
+            color: var(--gold);
+        }
+
+        .floating-admin-text,
+        .floating-cart-text,
+        .floating-cart-icon {
+            color: var(--gold);
+        }
+
+        .floating-cart-count {
+            background: var(--gold);
+            color: #080808;
+        }
+
+        .card:hover {
+            border-color: #f2d675;
+            box-shadow: 0 12px 30px var(--gold-soft);
+        }
+
+        .card img,
+        .modal-content img,
+        .cart-item,
+        .product-edit input,
+        .auth-content input {
+            border-color: var(--gold-soft);
+        }
+
+        .add-btn,
+        .modal-btn,
+        .auth-btn,
+        .postimages-btn {
+            border: 1px solid var(--gold);
+            background: #17150e;
+            color: var(--gold);
+        }
+
+        .add-btn:hover,
+        .modal-btn:hover,
+        .auth-btn:hover,
+        .postimages-btn:hover {
+            background: var(--gold);
+            color: #080808;
+        }
+
+        .whatsapp-btn,
+        .close-cart,
+        .close-modal,
+        .admin-close,
+        .delete-btn {
+            border: 1px solid var(--gold);
+            background: #171717;
+            color: #f5f5f5;
+        }
+
+        .close-cart:hover,
+        .close-modal:hover,
+        .admin-close:hover,
+        .delete-btn:hover {
+            background: var(--gold);
+            color: #080808;
+        }
+
+        .save-btn,
+        .add-new-btn {
+            border: 1px solid var(--gold);
+            background: #171717;
+            color: var(--gold);
+        }
+
+        .save-btn:hover,
+        .add-new-btn:hover {
+            background: var(--gold);
+            color: #080808;
+        }
+
+        .empty-message,
+        .loading-text {
+            color: var(--gold);
+        }
+
+        .spinner {
+            border-top-color: var(--gold);
         }
 
         .mountain-bg {
