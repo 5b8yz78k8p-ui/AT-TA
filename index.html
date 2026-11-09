@@ -180,16 +180,24 @@
         .auth-btn,
         .postimages-btn {
             border: 1px solid var(--gold);
-            background: #17150e;
-            color: var(--gold);
+            background: var(--gold);
+            color: #080808;
         }
 
         .add-btn:hover,
         .modal-btn:hover,
         .auth-btn:hover,
         .postimages-btn:hover {
-            background: var(--gold);
+            background: #f2d675;
             color: #080808;
+        }
+
+        header p {
+            color: #f5f5f5;
+        }
+
+        .price {
+            color: var(--gold);
         }
 
         .whatsapp-btn,
@@ -223,7 +231,6 @@
             color: #080808;
         }
 
-        .empty-message,
         .loading-text {
             color: var(--gold);
         }
@@ -387,7 +394,7 @@
                 const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDB, "products"));
                 
                 if (querySnapshot.empty) {
-                    grid.innerHTML = '<p class="empty-message">Товаров пока нет. Зайдите в админ-панель, чтобы добавить их.</p>';
+                    grid.innerHTML = '';
                     return;
                 }
 
@@ -410,7 +417,7 @@
             grid.innerHTML = '';
             
             if (products.length === 0) {
-                grid.innerHTML = '<p class="empty-message">Товаров пока нет. Зайдите в админ-панель, чтобы добавить их.</p>';
+                grid.innerHTML = '';
                 return;
             }
 
