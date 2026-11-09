@@ -126,6 +126,22 @@
             box-shadow: 0 0 18px var(--gold-soft);
         }
 
+        .floating-admin,
+        .floating-cart,
+        .cart-dropdown,
+        .card,
+        .modal-content,
+        .auth-content,
+        .admin-content {
+            background: rgba(15, 15, 15, 0.96);
+        }
+
+        .product-edit input,
+        .auth-content input {
+            background: #151515;
+            color: #f5f5f5;
+        }
+
         h1,
         .cart-dropdown h2,
         .total,
@@ -750,7 +766,7 @@
                     <div class="cart-item">
                         <span>${item.name} (x${item.quantity})</span>
                         <span>${item.price * item.quantity} ₽ 
-                            <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:5px; cursor:pointer;">X</button>
+                            <button onclick="removeFromCart(${index})" style="background:#171717; color:#f5f5f5; border:1px solid #d4af37; border-radius:5px; cursor:pointer;">X</button>
                         </span>
                     </div>
                 `;
